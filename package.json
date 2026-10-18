@@ -1,0 +1,11 @@
+{
+  "name": "nomnom-food-delivery",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "npm --prefix client run build",
+    "test": "npm --prefix server test",
+    "install:all": "npm --prefix client install --cache .npm-cache && npm --prefix server install --cache .npm-cache",
+    "preview": "NOMNOM_DIST_DIR=.next-preview npm --prefix client run build && NOMNOM_DIST_DIR=.next-preview npm --prefix client run start -- --port 3001"
+  }
+}
