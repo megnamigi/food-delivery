@@ -78,8 +78,12 @@ const names = {
   sessions: "Session",
 };
 export async function createStore({ uri, directory }) {
-  if (uri) {
-    await mongoose.connect(uri, { serverSelectionTimeoutMS: 8000 });
+ if (uri) {
+  if (mongoose.connection.readyState !== 1) {
+    await mongoose.connect(uri, {
+      serverSelectionTimeoutMS: 8000,
+    });
+  }
     const models = Object.fromEntries(
       Object.entries(schemas).map(([key, schema]) => [
         key,
