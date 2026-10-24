@@ -60,7 +60,6 @@ export function OrdersDashboard({ preview = false }: { preview?: boolean }) {
     let active = true;
     setLoading(true);
     setError("");
-    setSelected([]);
     if (from && to && from > to) {
       setError("Start date must be before end date.");
       setLoading(false);
@@ -142,6 +141,9 @@ export function OrdersDashboard({ preview = false }: { preview?: boolean }) {
     setSelected((ids) =>
       ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id],
     );
+  const pageIds = result.orders.map((order) => order._id),
+    selectedOnPage = pageIds.filter((id) => selected.includes(id)).length,
+    allOnPageSelected = pageIds.length > 0 && selectedOnPage === pageIds.length;
   const changeSort = (kind: "date" | "status") => {
     setSort((current) =>
       current === `${kind}-asc` ? `${kind}-desc` : `${kind}-asc`,
@@ -183,6 +185,7 @@ export function OrdersDashboard({ preview = false }: { preview?: boolean }) {
                     <input
                       aria-label="From date"
                       onInput={(e) => {
+                        setSelected([]);
                         setFrom(e.currentTarget.value);
                         setPage(1);
                       }}
@@ -190,6 +193,7 @@ export function OrdersDashboard({ preview = false }: { preview?: boolean }) {
                       value={from}
                       max={to || undefined}
                       onChange={(e) => {
+                        setSelected([]);
                         setFrom(e.target.value);
                         setPage(1);
                       }}
@@ -200,6 +204,7 @@ export function OrdersDashboard({ preview = false }: { preview?: boolean }) {
                     <input
                       aria-label="To date"
                       onInput={(e) => {
+                        setSelected([]);
                         setTo(e.currentTarget.value);
                         setPage(1);
                       }}
@@ -207,6 +212,7 @@ export function OrdersDashboard({ preview = false }: { preview?: boolean }) {
                       value={to}
                       min={from || undefined}
                       onChange={(e) => {
+                        setSelected([]);
                         setTo(e.target.value);
                         setPage(1);
                       }}
@@ -215,6 +221,7 @@ export function OrdersDashboard({ preview = false }: { preview?: boolean }) {
                   <button
                     className="admin-text-link"
                     onClick={() => {
+                      setSelected([]);
                       setFrom("");
                       setTo("");
                       setPage(1);
@@ -251,14 +258,17 @@ export function OrdersDashboard({ preview = false }: { preview?: boolean }) {
                   <input
                     type="checkbox"
                     aria-label="Select all orders on this page"
-                    checked={
-                      !!result.orders.length &&
-                      selected.length === result.orders.length
-                    }
-                    disabled={saving || loading}
+                    checked={allOnPageSelected}
+                    ref={(element) => {
+                      if (element)
+                        element.indeterminate = selectedOnPage > 0 && !allOnPageSelected;
+                    }}
+                    disabled={saving || loading || !pageIds.length}
                     onChange={(e) =>
-                      setSelected(
-                        e.target.checked ? result.orders.map((o) => o._id) : [],
+                      setSelected((ids) =>
+                        e.target.checked
+                          ? [...new Set([...ids, ...pageIds])]
+                          : ids.filter((id) => !pageIds.includes(id)),
                       )
                     }
                   />
@@ -375,7 +385,9 @@ export function OrdersDashboard({ preview = false }: { preview?: boolean }) {
                   <td colSpan={8} className="admin-table-empty">
                     {error
                       ? "Orders could not be loaded."
-                      : "No orders in this date range."}
+                      : from || to
+                        ? "No orders in this date range."
+                        : "No orders yet. New customer orders will appear here."}
                   </td>
                 </tr>
               )}

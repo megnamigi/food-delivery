@@ -23,8 +23,17 @@ const app = createApp({
 });
 const port = Number(process.env.PORT || 4000),
   host = process.env.NODE_ENV === "production" ? "0.0.0.0" : "127.0.0.1";
-const server = app.listen(port, host, () =>
+const server = app.listen(port, host);
+server.once("listening", () =>
   console.log(`NomNom API: http://${host}:${port} · storage: ${store.mode}`),
 );
+server.once("error", (error) => {
+  console.error(
+    error.code === "EADDRINUSE"
+      ? `NomNom API could not start: port ${port} is already in use. Stop the existing API before restarting.`
+      : `NomNom API could not start (${error.code || "unknown error"}).`,
+  );
+  process.exit(1);
+});
 for (const signal of ["SIGTERM", "SIGINT"])
   process.on(signal, () => server.close(() => process.exit(0)));

@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { LayoutGrid, Truck, ArrowLeft, UserRound } from "lucide-react";
+import { LayoutGrid, Truck, ArrowLeft, UserRound, Settings } from "lucide-react";
 import { Brand } from "@/components/brand";
 import { useShop } from "@/components/providers";
 import { foods, categories } from "@/lib/catalog";
@@ -85,6 +85,14 @@ export function AdminFrame({ children }: { children: ReactNode }) {
               <Truck size={19} />
               Orders
             </Link>
+            <button
+              type="button"
+              disabled
+              title="Settings are not available yet."
+            >
+              <Settings size={19} />
+              Settings
+            </button>
           </nav>
           <Link className="admin-back" href="/">
             <ArrowLeft size={16} />

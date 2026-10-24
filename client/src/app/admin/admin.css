@@ -40,13 +40,21 @@
   gap: 18px;
   margin-top: 52px;
 }
-.admin-sidebar nav a {
+.admin-sidebar nav a,
+.admin-sidebar nav button {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 12px 20px;
   border-radius: 24px;
   color: #18181b;
+}
+.admin-sidebar nav button {
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: not-allowed;
 }
 .admin-sidebar nav a.active {
   color: #fff;
@@ -932,7 +940,8 @@
   .admin-sidebar .brand img {
     width: 30px;
   }
-  .admin-sidebar nav a {
+  .admin-sidebar nav a,
+  .admin-sidebar nav button {
     gap: 8px;
     padding: 10px 11px;
     font-size: 12px;
@@ -1011,10 +1020,12 @@
     gap: 5px;
     margin-left: auto;
   }
-  .admin-sidebar nav a {
+  .admin-sidebar nav a,
+  .admin-sidebar nav button {
     padding: 9px 11px;
   }
-  .admin-sidebar nav a svg {
+  .admin-sidebar nav a svg,
+  .admin-sidebar nav button svg {
     display: none;
   }
   .admin-back {
